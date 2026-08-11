@@ -6,13 +6,33 @@ import io
 
 st.set_page_config(page_title="X-ray Quality Control Classifier", page_icon="🔬", layout="centered")
 
-st.markdown("<h1 style='text-align: center;'>🔬 X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: gray;'>AI-powered radiograph quality assessment tool</p>", unsafe_allow_html=True)
-st.markdown("---")
-
 API_KEY = st.secrets["ROBOFLOW_API_KEY"]
 WORKSPACE = "zara-ashraf"
 WORKFLOW_ID = "xray-qc-classifier-vxray-qc-classifier-evd8y-1-vit-base-patch16-224-in21k-t1-logic"
+
+CLASS_INFO = {
+    "Good_Quality": "The X-ray meets quality standards — no visible defects.",
+    "Blur": "The image shows motion blur or focus issues.",
+    "Exposure_Error": "The image is over-exposed or under-exposed.",
+    "Foreign_Artifact": "An unexpected object (metal, jewelry, hardware) is visible in the image.",
+}
+
+# ---- SIDEBAR ----
+with st.sidebar:
+    st.header("About this project")
+    st.write("This tool automatically checks radiograph images for common quality-control issues using a custom-trained Vision Transformer (ViT) model.")
+    st.subheader("Detected Classes")
+    for cls, desc in CLASS_INFO.items():
+        st.markdown(f"**{cls.replace('_', ' ')}**")
+        st.caption(desc)
+    st.markdown("---")
+    st.caption("Developed by Zara Ashraf")
+
+# ---- HEADER ----
+st.markdown("<h1 style='text-align: center;'>🔬 X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>AI-powered radiograph quality assessment tool</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray; font-size: 0.9em;'>by Zara Ashraf</p>", unsafe_allow_html=True)
+st.markdown("---")
 
 uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
 
@@ -28,7 +48,7 @@ if uploaded_file is not None:
     image.save(buffered, format="JPEG")
     img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    with st.spinner("Analyzing image..."):
+    with st.spinner("Running quality checks on your image..."):
         try:
             url = f"https://serverless.roboflow.com/infer/workflows/{WORKSPACE}/{WORKFLOW_ID}"
             payload = {
@@ -46,13 +66,23 @@ if uploaded_file is not None:
             with col2:
                 st.subheader("Prediction Results")
                 top = preds_sorted[0]
-                st.success(f"**{top['class']}** — {top['confidence']*100:.1f}% confidence")
+                conf = top['confidence'] * 100
+
+                if conf >= 80:
+                    st.success(f"**{top['class'].replace('_', ' ')}** — {conf:.1f}% confidence")
+                elif conf >= 50:
+                    st.warning(f"**{top['class'].replace('_', ' ')}** — {conf:.1f}% confidence")
+                else:
+                    st.error(f"**{top['class'].replace('_', ' ')}** — {conf:.1f}% confidence (low certainty)")
+
+                st.caption(CLASS_INFO.get(top['class'], ""))
+
                 st.write("All class probabilities:")
                 for p in preds_sorted:
-                    st.progress(p['confidence'], text=f"{p['class']}: {p['confidence']*100:.1f}%")
+                    st.progress(p['confidence'], text=f"{p['class'].replace('_', ' ')}: {p['confidence']*100:.1f}%")
+
         except Exception as e:
             st.error(f"Something went wrong: {e}")
-            st.write(result if 'result' in dir() else "No response received")
 
 st.markdown("---")
 st.caption("Built by Zara Ashraf | Custom-trained Vision Transformer classification model.")
