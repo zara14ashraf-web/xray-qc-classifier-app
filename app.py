@@ -3,6 +3,7 @@ import requests
 import base64
 from PIL import Image
 import io
+from datetime import datetime
 
 st.set_page_config(page_title="X-ray Quality Control Classifier", page_icon="🔬", layout="centered")
 
@@ -17,7 +18,9 @@ CLASS_INFO = {
     "Foreign_Artifact": "An unexpected object (metal, jewelry, hardware) is visible in the image.",
 }
 
-# ---- SIDEBAR ----
+if "history" not in st.session_state:
+    st.session_state.history = []
+
 with st.sidebar:
     st.header("About this project")
     st.write("This tool automatically checks radiograph images for common quality-control issues using a custom-trained Vision Transformer (ViT) model.")
@@ -28,12 +31,19 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Developed by Zara Ashraf")
 
-# ---- HEADER ----
 st.markdown("<h1 style='text-align: center;'>🔬 X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>AI-powered radiograph quality assessment tool</p>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray; font-size: 0.9em;'>by Zara Ashraf</p>", unsafe_allow_html=True)
 st.markdown("---")
+
 st.info("⚠️ This is a demonstration prototype trained on a limited, self-curated dataset. It's a proof-of-concept that shows the approach works — accuracy will continue to improve as the dataset grows and the model is retrained.")
+
+with st.expander("ℹ️ How it works"):
+    st.write("""
+    This classifier uses a **Vision Transformer (ViT)** model trained on a custom-built dataset of chest and body-part X-rays.
+    The model was trained to recognize four quality categories: Good Quality, Blur, Exposure Error, and Foreign Artifact.
+    Images are processed through a Roboflow-hosted inference workflow, which returns a confidence score for each category.
+    """)
 
 uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
 
@@ -82,8 +92,21 @@ if uploaded_file is not None:
                 for p in preds_sorted:
                     st.progress(p['confidence'], text=f"{p['class'].replace('_', ' ')}: {p['confidence']*100:.1f}%")
 
-        except Exception as e:
-            st.error(f"Something went wrong: {e}")
+            st.session_state.history.append({
+                "Time": datetime.now().strftime("%H:%M:%S"),
+                "Image": uploaded_file.name,
+                "Prediction": top['class'].replace('_', ' '),
+                "Confidence": f"{conf:.1f}%"
+            })
 
-st.markdown("---")
-st.caption("Built by Zara Ashraf | Custom-trained Vision Transformer classification model.")
+            report_text = f"""X-ray Quality Control Report
+Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+Image: {uploaded_file.name}
+Prediction: {top['class'].replace('_', ' ')}
+Confidence: {conf:.1f}%
+
+All class probabilities:
+"""
+            for p in preds_sorted:
+                report_text += f"- {p['class'].replace('
