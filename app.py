@@ -12,7 +12,7 @@ WORKSPACE = "zara-ashraf"
 WORKFLOW_ID = "xray-qc-classifier-vxray-qc-classifier-evd8y-1-vit-base-patch16-224-in21k-t1-logic"
 
 CLASS_INFO = {
-    "Good_Quality": "The X-ray meets quality standards — no visible defects.",
+    "Good_Quality": "The X-ray meets quality standards - no visible defects.",
     "Blur": "The image shows motion blur or focus issues.",
     "Exposure_Error": "The image is over-exposed or under-exposed.",
     "Foreign_Artifact": "An unexpected object (metal, jewelry, hardware) is visible in the image.",
@@ -31,25 +31,20 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Developed by Zara Ashraf")
 
-st.markdown("<h1 style='text-align: center;'>🔬 X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>AI-powered radiograph quality assessment tool</p>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray; font-size: 0.9em;'>by Zara Ashraf</p>", unsafe_allow_html=True)
 st.markdown("---")
 
-st.info("⚠️ This is a demonstration prototype trained on a limited, self-curated dataset. It's a proof-of-concept that shows the approach works — accuracy will continue to improve as the dataset grows and the model is retrained.")
+st.info("This is a demonstration prototype trained on a limited, self-curated dataset. It's a proof-of-concept that shows the approach works, accuracy will continue to improve as the dataset grows and the model is retrained.")
 
-with st.expander("ℹ️ How it works"):
-    st.write("""
-    This classifier uses a **Vision Transformer (ViT)** model trained on a custom-built dataset of chest and body-part X-rays.
-    The model was trained to recognize four quality categories: Good Quality, Blur, Exposure Error, and Foreign Artifact.
-    Images are processed through a Roboflow-hosted inference workflow, which returns a confidence score for each category.
-    """)
+with st.expander("How it works"):
+    st.write("This classifier uses a Vision Transformer (ViT) model trained on a custom-built dataset of chest and body-part X-rays. The model was trained to recognize four quality categories: Good Quality, Blur, Exposure Error, and Foreign Artifact. Images are processed through a Roboflow-hosted inference workflow, which returns a confidence score for each category.")
 
 uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
 
 if uploaded_file is not None:
     col1, col2 = st.columns(2)
-
     image = Image.open(uploaded_file).convert("RGB")
 
     with col1:
@@ -61,7 +56,7 @@ if uploaded_file is not None:
 
     with st.spinner("Running quality checks on your image..."):
         try:
-            url = f"https://serverless.roboflow.com/infer/workflows/{WORKSPACE}/{WORKFLOW_ID}"
+            url = "https://serverless.roboflow.com/infer/workflows/" + WORKSPACE + "/" + WORKFLOW_ID
             payload = {
                 "api_key": API_KEY,
                 "inputs": {
@@ -80,35 +75,57 @@ if uploaded_file is not None:
                 conf = top['confidence'] * 100
 
                 if conf >= 80:
-                    st.success(f"**{top['class'].replace('_', ' ')}** — {conf:.1f}% confidence")
+                    st.success(top['class'].replace('_', ' ') + " - " + str(round(conf, 1)) + "% confidence")
                 elif conf >= 50:
-                    st.warning(f"**{top['class'].replace('_', ' ')}** — {conf:.1f}% confidence")
+                    st.warning(top['class'].replace('_', ' ') + " - " + str(round(conf, 1)) + "% confidence")
                 else:
-                    st.error(f"**{top['class'].replace('_', ' ')}** — {conf:.1f}% confidence (low certainty)")
+                    st.error(top['class'].replace('_', ' ') + " - " + str(round(conf, 1)) + "% confidence (low certainty)")
 
                 st.caption(CLASS_INFO.get(top['class'], ""))
 
                 st.write("All class probabilities:")
                 for p in preds_sorted:
-                    st.progress(p['confidence'], text=f"{p['class'].replace('_', ' ')}: {p['confidence']*100:.1f}%")
+                    class_name = p['class'].replace('_', ' ')
+                    conf_val = p['confidence'] * 100
+                    st.progress(p['confidence'], text=class_name + ": " + str(round(conf_val, 1)) + "%")
 
             st.session_state.history.append({
                 "Time": datetime.now().strftime("%H:%M:%S"),
                 "Image": uploaded_file.name,
                 "Prediction": top['class'].replace('_', ' '),
-                "Confidence": f"{conf:.1f}%"
+                "Confidence": str(round(conf, 1)) + "%"
             })
 
-            report_text = f"""X-ray Quality Control Report
-Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-
-Image: {uploaded_file.name}
-Prediction: {top['class'].replace('_', ' ')}
-Confidence: {conf:.1f}%
-
-All class probabilities:
-"""
+            report_lines = []
+            report_lines.append("X-ray Quality Control Report")
+            report_lines.append("Generated: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            report_lines.append("")
+            report_lines.append("Image: " + uploaded_file.name)
+            report_lines.append("Prediction: " + top['class'].replace('_', ' '))
+            report_lines.append("Confidence: " + str(round(conf, 1)) + "%")
+            report_lines.append("")
+            report_lines.append("All class probabilities:")
             for p in preds_sorted:
-               class_name = p['class'].replace('_', ' ')
+                class_name = p['class'].replace('_', ' ')
                 conf_val = p['confidence'] * 100
-                report_text += "- " + class_name + ": " + str(round(conf_val, 1)) + "%\n"
+                report_lines.append("- " + class_name + ": " + str(round(conf_val, 1)) + "%")
+
+            report_text = "\n".join(report_lines)
+
+            st.download_button(
+                label="Download Report",
+                data=report_text,
+                file_name="xray_qc_report_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".txt",
+                mime="text/plain"
+            )
+
+        except Exception as e:
+            st.error("Something went wrong: " + str(e))
+
+if st.session_state.history:
+    st.markdown("---")
+    st.subheader("Session History")
+    st.table(st.session_state.history)
+
+st.markdown("---")
+st.caption("Built by Zara Ashraf | Custom-trained Vision Transformer classification model.")
