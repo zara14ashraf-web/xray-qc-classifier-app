@@ -109,4 +109,6 @@ Confidence: {conf:.1f}%
 All class probabilities:
 """
             for p in preds_sorted:
-                report_text += f"- {p['class'].replace('
+               class_name = p['class'].replace('_', ' ')
+                conf_val = p['confidence'] * 100
+                report_text += "- " + class_name + ": " + str(round(conf_val, 1)) + "%\n"
