@@ -14,7 +14,7 @@ API_KEY = st.secrets["ROBOFLOW_API_KEY"]
 WORKSPACE = "zara-ashraf"
 WORKFLOW_ID = "xray-qc-classifier-vxray-qc-classifier-evd8y-1-vit-base-patch16-224-in21k-t1-logic"
 
-uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
 
 if uploaded_file is not None:
     col1, col2 = st.columns(2)
