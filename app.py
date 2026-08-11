@@ -33,7 +33,7 @@ st.markdown("<h1 style='text-align: center;'>🔬 X-ray Quality Control Classifi
 st.markdown("<p style='text-align: center; color: gray;'>AI-powered radiograph quality assessment tool</p>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray; font-size: 0.9em;'>by Zara Ashraf</p>", unsafe_allow_html=True)
 st.markdown("---")
-st.info("⚠️ This is a prototype model trained on a limited dataset. Predictions are for demonstration purposes and may not always be fully accurate.")
+st.info("⚠️ This is a demonstration prototype trained on a limited, self-curated dataset. It's a proof-of-concept that shows the approach works — accuracy will continue to improve as the dataset grows and the model is retrained.")
 
 uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
 
