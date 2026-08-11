@@ -1,3 +1,3 @@
 streamlit
-inference-sdk
+requests
 Pillow
