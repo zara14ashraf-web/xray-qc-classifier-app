@@ -55,4 +55,4 @@ if uploaded_file is not None:
             st.write(result if 'result' in dir() else "No response received")
 
 st.markdown("---")
-st.caption("Built with a custom-trained Vision Transformer classification model.")
+st.caption("Built by Zara Ashraf | Custom-trained Vision Transformer classification model.")
