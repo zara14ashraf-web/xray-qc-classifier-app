@@ -20,13 +20,15 @@ CLASS_INFO = {
 
 if "history" not in st.session_state:
     st.session_state.history = []
+if "selected_image_path" not in st.session_state:
+    st.session_state.selected_image_path = None
 
 with st.sidebar:
     st.header("About this project")
     st.write("This tool automatically checks radiograph images for common quality-control issues using a custom-trained Vision Transformer (ViT) model.")
     st.subheader("Detected Classes")
     for cls, desc in CLASS_INFO.items():
-        st.markdown(f"**{cls.replace('_', ' ')}**")
+        st.markdown("**" + cls.replace('_', ' ') + "**")
         st.caption(desc)
     st.markdown("---")
     st.caption("Developed by Zara Ashraf")
@@ -41,17 +43,45 @@ st.info("This is a demonstration prototype trained on a limited, self-curated da
 with st.expander("How it works"):
     st.write("This classifier uses a Vision Transformer (ViT) model trained on a custom-built dataset of chest and body-part X-rays. The model was trained to recognize four quality categories: Good Quality, Blur, Exposure Error, and Foreign Artifact. Images are processed through a Roboflow-hosted inference workflow, which returns a confidence score for each category.")
 
-uploaded_file = st.file_uploader("Upload an X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
+st.subheader("Try a sample image")
+sample_files = [
+    ".streamlit/sample 1.jpg",
+    ".streamlit/sample 2.png",
+    ".streamlit/sample 3.png",
+    ".streamlit/sample 4.jpeg",
+]
+sample_cols = st.columns(4)
+for i, col in enumerate(sample_cols):
+    with col:
+        if st.button("Sample " + str(i + 1), use_container_width=True):
+            st.session_state.selected_image_path = sample_files[i]
+
+st.markdown("---")
+
+uploaded_file = st.file_uploader("Or upload your own X-ray image", type=["jpg", "jpeg", "png", "bmp", "tiff", "webp", "jfif"])
+
+image_source = None
+image_name = None
 
 if uploaded_file is not None:
+    image_source = Image.open(uploaded_file).convert("RGB")
+    image_name = uploaded_file.name
+    st.session_state.selected_image_path = None
+elif st.session_state.selected_image_path is not None:
+    try:
+        image_source = Image.open(st.session_state.selected_image_path).convert("RGB")
+        image_name = st.session_state.selected_image_path
+    except FileNotFoundError:
+        st.warning("Sample image not found.")
+
+if image_source is not None:
     col1, col2 = st.columns(2)
-    image = Image.open(uploaded_file).convert("RGB")
 
     with col1:
-        st.image(image, caption="Uploaded X-ray", use_container_width=True)
+        st.image(image_source, caption="Selected X-ray", use_container_width=True)
 
     buffered = io.BytesIO()
-    image.save(buffered, format="JPEG")
+    image_source.save(buffered, format="JPEG")
     img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
     with st.spinner("Running quality checks on your image..."):
@@ -91,7 +121,7 @@ if uploaded_file is not None:
 
             st.session_state.history.append({
                 "Time": datetime.now().strftime("%H:%M:%S"),
-                "Image": uploaded_file.name,
+                "Image": image_name,
                 "Prediction": top['class'].replace('_', ' '),
                 "Confidence": str(round(conf, 1)) + "%"
             })
@@ -100,7 +130,7 @@ if uploaded_file is not None:
             report_lines.append("X-ray Quality Control Report")
             report_lines.append("Generated: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             report_lines.append("")
-            report_lines.append("Image: " + uploaded_file.name)
+            report_lines.append("Image: " + str(image_name))
             report_lines.append("Prediction: " + top['class'].replace('_', ' '))
             report_lines.append("Confidence: " + str(round(conf, 1)) + "%")
             report_lines.append("")
