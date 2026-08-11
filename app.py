@@ -4,9 +4,9 @@ import base64
 from PIL import Image
 import io
 
-st.set_page_config(page_title="X-ray Quality Control Classifier", page_icon="🩻", layout="centered")
+st.set_page_config(page_title="X-ray Quality Control Classifier", page_icon="🔬", layout="centered")
 
-st.markdown("<h1 style='text-align: center;'>🩻 X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>🔬 X-ray Quality Control Classifier</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>AI-powered radiograph quality assessment tool</p>", unsafe_allow_html=True)
 st.markdown("---")
 
