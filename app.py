@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 # Keep the upload limit at 200 MB
-st.set_option("server.maxUploadSize", 200)
+
 
 
 # ---------------------------------------------------------
