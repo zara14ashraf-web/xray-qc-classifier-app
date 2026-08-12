@@ -9,7 +9,7 @@ st.set_page_config(page_title="X-ray Quality Control Classifier", page_icon="ðŸ”
 
 API_KEY = st.secrets["ROBOFLOW_API_KEY"]
 WORKSPACE = "zara-ashraf"
-WORKFLOW_ID = "xray-qc-classifier-vxray-qc-classifier-qq9jj-1-vit-base-patch16-224-in21k-t1-logic",
+WORKFLOW_ID = WORKFLOW_ID = "xray-qc-classifier-vxray-qc-classifier-qq9jj-1-vit-base-patch16-224-in21k-t1-logic"
 CLASS_INFO = {
     "Good_Quality": "The X-ray meets quality standards - no visible defects.",
     "Blur": "The image shows motion blur or focus issues.",
