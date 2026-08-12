@@ -659,3 +659,7 @@ st.caption(
     "Built by Zara Ashraf | "
     "Custom-trained Vision Transformer classification model."
 )
+st.caption(
+    "For research and educational purposes only. This tool is not intended "
+    "for clinical diagnosis or to replace professional medical judgment."
+)
