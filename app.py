@@ -12,26 +12,20 @@ from datetime import datetime
 
 st.set_page_config(
     page_title="X-ray Quality Control Classifier",
-    page_icon="🔬",
+    page_icon="🩻",
     layout="centered"
 )
 
-# Keep the upload limit at 200 MB
-
-
 
 # ---------------------------------------------------------
-# ROBOfLOW CONFIGURATION
+# ROBOFLOW CONFIGURATION
 # ---------------------------------------------------------
 
 API_KEY = st.secrets["ROBOFLOW_API_KEY"]
 
 WORKSPACE = "zara-ashraf"
 
-WORKFLOW_ID = (
-    "xray-qc-classifier-vxray-qc-classifier-qq9jj-1-vit-base-"
-    "patch16-224-in21k-t1-logic"
-)
+WORKFLOW_ID = "xray-qc-classifier-vxray-qc-classifier-qq9jj-1-vit-base-patch16-224-in21k-t1-logic"
 
 
 # ---------------------------------------------------------
@@ -39,17 +33,10 @@ WORKFLOW_ID = (
 # ---------------------------------------------------------
 
 CLASS_INFO = {
-    "Good_Quality":
-        "The X-ray meets quality standards - no visible defects.",
-
-    "Blur":
-        "The image shows motion blur or focus issues.",
-
-    "Exposure_Error":
-        "The image is over-exposed or under-exposed.",
-
-    "Foreign_Artifact":
-        "An unexpected object (metal, jewelry, hardware) is visible in the image.",
+    "Good_Quality": "The X-ray meets quality standards - no visible defects.",
+    "Blur": "The image shows motion blur or focus issues.",
+    "Exposure_Error": "The image is over-exposed or under-exposed.",
+    "Foreign_Artifact": "An unexpected object (metal, jewelry, hardware) is visible in the image.",
 }
 
 
@@ -74,16 +61,17 @@ with st.sidebar:
 
     st.write(
         "This tool automatically checks radiograph images for common "
-        "quality-control issues using a custom-trained Vision Transformer "
-        "(ViT) model."
+        "quality-control issues using a custom-trained Vision Transformer (ViT) model."
     )
 
     st.subheader("Detected Classes")
 
-    for cls, desc in CLASS_INFO.items():
+    for number, (cls, desc) in enumerate(CLASS_INFO.items(), start=1):
+
+        class_name = cls.replace("_", " ")
 
         st.markdown(
-            "**" + cls.replace("_", " ") + "**"
+            f"**{number:02d} — {class_name}**"
         )
 
         st.caption(desc)
@@ -94,19 +82,17 @@ with st.sidebar:
 
 
 # ---------------------------------------------------------
-# MAIN TITLE
+# MAIN HEADER
 # ---------------------------------------------------------
 
 st.markdown(
-    "<h1 style='text-align: center;'>"
-    "X-ray Quality Control Classifier"
-    "</h1>",
+    "<h1 style='text-align: center;'>X-ray Quality Control Classifier</h1>",
     unsafe_allow_html=True
 )
 
 st.markdown(
     "<p style='text-align: center; color: gray;'>"
-    "AI-powered radiograph quality assessment tool"
+    "AI-assisted assessment of common radiographic image-quality issues"
     "</p>",
     unsafe_allow_html=True
 )
@@ -122,15 +108,35 @@ st.markdown("---")
 
 
 # ---------------------------------------------------------
-# IMPORTANT PROTOTYPE DISCLAIMER
+# ORIGINAL BLUE INFORMATION BOX
 # ---------------------------------------------------------
 
 st.info(
-    "This is a demonstration prototype trained on a limited, "
-    "self-curated dataset. It's a proof-of-concept that shows the "
-    "approach works, accuracy will continue to improve as the dataset "
-    "grows and the model is retrained."
+    "This is a demonstration prototype trained on a limited, self-curated dataset. "
+    "It's a proof-of-concept that shows the approach works, accuracy will continue "
+    "to improve as the dataset grows and the model is retrained."
 )
+
+
+# ---------------------------------------------------------
+# WHAT DOES THIS TOOL ASSESS?
+# ---------------------------------------------------------
+
+st.subheader("What does this tool assess?")
+
+assessment_cols = st.columns(4)
+
+assessment_items = [
+    ("✓", "Good Quality"),
+    ("✓", "Motion Blur"),
+    ("✓", "Exposure Error"),
+    ("✓", "Foreign Artifact"),
+]
+
+for col, (symbol, text) in zip(assessment_cols, assessment_items):
+
+    with col:
+        st.markdown(f"**{symbol} {text}**")
 
 
 # ---------------------------------------------------------
@@ -140,25 +146,23 @@ st.info(
 with st.expander("Why I developed this tool"):
 
     st.write(
-        "In medical imaging, obtaining a diagnostic image is not only "
-        "about producing an X-ray. Image quality also matters because "
-        "positioning, motion, exposure and external artifacts can affect "
-        "how an examination is interpreted."
+        "In medical imaging, obtaining a diagnostic image is not only about "
+        "producing an X-ray. Image quality also matters because positioning, "
+        "motion, exposure, and external artifacts can affect how an examination "
+        "is interpreted."
     )
 
     st.write(
-        "I developed this project to explore how artificial intelligence "
-        "could be used as a supportive quality-control tool for "
-        "radiographic images. The goal is not to replace radiographers "
-        "or radiologists, but to investigate whether a trained AI model "
-        "can identify common image-quality issues and provide an "
-        "additional layer of support before image interpretation."
+        "I developed this project to explore how artificial intelligence could be "
+        "used as a supportive quality-control tool for radiographic images. "
+        "The goal is not to replace radiographers or radiologists, but to "
+        "investigate whether a trained AI model can identify common image-quality "
+        "issues and provide an additional layer of support before image interpretation."
     )
 
     st.write(
-        "This project also allowed me to combine my background in "
-        "Medical Imaging Technology with an interest in artificial "
-        "intelligence and medical imaging research."
+        "This project also allowed me to combine my background in Medical Imaging "
+        "Technology with my interest in artificial intelligence and medical imaging research."
     )
 
 
@@ -168,47 +172,62 @@ with st.expander("Why I developed this tool"):
 
 with st.expander("How it works"):
 
+    st.markdown("### 1 — Upload")
+
     st.write(
-        "This classifier uses a Vision Transformer (ViT) model trained "
-        "on a custom-built dataset of chest and body-part X-rays. "
-        "The model was trained to recognize four quality categories: "
-        "Good Quality, Blur, Exposure Error, and Foreign Artifact. "
-        "Images are processed through a Roboflow-hosted inference "
-        "workflow, which returns a confidence score for each category."
+        "A radiographic image is uploaded to the application."
     )
 
-    st.markdown("### 1. Image Input")
+    st.markdown("### 2 — Preprocessing")
 
     st.write(
-        "A user can either select a sample X-ray or upload an image "
-        "from their own device."
+        "The image is prepared and sent to the inference workflow."
     )
 
-    st.markdown("### 2. Image Processing")
+    st.markdown("### 3 — AI Classification")
 
     st.write(
-        "The selected image is converted into a suitable format and "
-        "sent securely to the hosted inference workflow."
+        "A custom-trained Vision Transformer (ViT) classifies the image "
+        "into one of four quality categories."
     )
 
-    st.markdown("### 3. AI Classification")
+    st.markdown("### 4 — Result")
 
     st.write(
-        "The custom-trained Vision Transformer (ViT) model evaluates "
-        "the image and estimates the probability of each quality category."
-    )
-
-    st.markdown("### 4. Quality Assessment")
-
-    st.write(
-        "The category with the highest confidence is displayed as the "
-        "model's prediction, together with the probabilities for all "
-        "detected classes."
+        "The application displays the predicted category and confidence scores."
     )
 
 
 # ---------------------------------------------------------
-# TRY SAMPLE IMAGE
+# ABOUT THE MODEL
+# ---------------------------------------------------------
+
+with st.expander("About the Model"):
+
+    model_col1, model_col2 = st.columns(2)
+
+    with model_col1:
+
+        st.markdown("**Model architecture**")
+        st.write("Vision Transformer (ViT)")
+
+        st.markdown("**Task**")
+        st.write("Multi-class image classification")
+
+    with model_col2:
+
+        st.markdown("**Classes**")
+        st.write("4")
+
+        st.markdown("**Inference**")
+        st.write("Roboflow-hosted workflow")
+
+    st.markdown("**Application**")
+    st.write("Radiographic image-quality assessment")
+
+
+# ---------------------------------------------------------
+# SAMPLE IMAGES
 # ---------------------------------------------------------
 
 st.subheader("Try a sample image")
@@ -238,11 +257,17 @@ st.markdown("---")
 
 
 # ---------------------------------------------------------
-# IMAGE UPLOAD
+# UPLOAD SECTION
 # ---------------------------------------------------------
 
+st.subheader("Upload an X-ray")
+
+st.write(
+    "Upload a radiograph to assess common image-quality issues."
+)
+
 uploaded_file = st.file_uploader(
-    "Or upload your own X-ray image",
+    "Upload X-ray",
     type=[
         "jpg",
         "jpeg",
@@ -255,14 +280,17 @@ uploaded_file = st.file_uploader(
     help="Maximum file size: 200 MB"
 )
 
+st.caption(
+    "Supported formats: JPG, JPEG, PNG, BMP, TIFF, WEBP, JFIF"
+)
+
+
+# ---------------------------------------------------------
+# IMAGE SELECTION
+# ---------------------------------------------------------
 
 image_source = None
 image_name = None
-
-
-# ---------------------------------------------------------
-# HANDLE UPLOADED IMAGE
-# ---------------------------------------------------------
 
 if uploaded_file is not None:
 
@@ -275,14 +303,7 @@ if uploaded_file is not None:
 
     except Exception:
 
-        st.error(
-            "The uploaded file could not be opened as an image."
-        )
-
-
-# ---------------------------------------------------------
-# HANDLE SAMPLE IMAGE
-# ---------------------------------------------------------
+        st.error("The uploaded file could not be opened as an image.")
 
 elif st.session_state.selected_image_path is not None:
 
@@ -292,13 +313,26 @@ elif st.session_state.selected_image_path is not None:
             st.session_state.selected_image_path
         ).convert("RGB")
 
-        image_name = st.session_state.selected_image_path
+        sample_path = st.session_state.selected_image_path
+
+        if "sample 1" in sample_path.lower():
+            image_name = "Sample 1"
+
+        elif "sample 2" in sample_path.lower():
+            image_name = "Sample 2"
+
+        elif "sample 3" in sample_path.lower():
+            image_name = "Sample 3"
+
+        elif "sample 4" in sample_path.lower():
+            image_name = "Sample 4"
+
+        else:
+            image_name = sample_path
 
     except FileNotFoundError:
 
-        st.warning(
-            "Sample image not found."
-        )
+        st.warning("Sample image not found.")
 
 
 # ---------------------------------------------------------
@@ -309,10 +343,6 @@ if image_source is not None:
 
     col1, col2 = st.columns(2)
 
-    # -----------------------------------------------------
-    # DISPLAY IMAGE
-    # -----------------------------------------------------
-
     with col1:
 
         st.image(
@@ -320,10 +350,6 @@ if image_source is not None:
             caption="Selected X-ray",
             use_container_width=True
         )
-
-    # -----------------------------------------------------
-    # CONVERT IMAGE TO BASE64
-    # -----------------------------------------------------
 
     buffered = io.BytesIO()
 
@@ -338,7 +364,7 @@ if image_source is not None:
 
 
     # -----------------------------------------------------
-    # RUN ROBOfLOW WORKFLOW
+    # ROBOFLOW INFERENCE
     # -----------------------------------------------------
 
     with st.spinner(
@@ -348,8 +374,7 @@ if image_source is not None:
         try:
 
             url = (
-                "https://serverless.roboflow.com/"
-                "infer/workflows/"
+                "https://serverless.roboflow.com/infer/workflows/"
                 + WORKSPACE
                 + "/"
                 + WORKFLOW_ID
@@ -368,17 +393,12 @@ if image_source is not None:
             response = requests.post(
                 url,
                 json=payload,
-                timeout=120
+                timeout=60
             )
 
             response.raise_for_status()
 
             result = response.json()
-
-
-            # -------------------------------------------------
-            # EXTRACT PREDICTIONS
-            # -------------------------------------------------
 
             preds = (
                 result["outputs"][0]
@@ -394,93 +414,98 @@ if image_source is not None:
 
 
             # -------------------------------------------------
-            # DISPLAY RESULTS
+            # AI ASSESSMENT
             # -------------------------------------------------
 
             with col2:
 
-                st.subheader("Prediction Results")
+                st.subheader("AI Assessment")
 
                 top = preds_sorted[0]
 
-                conf = top["confidence"] * 100
+                predicted_class = top["class"]
 
-                class_name = top["class"].replace(
+                class_display_name = predicted_class.replace(
                     "_",
                     " "
                 )
 
-
-                # ---------------------------------------------
-                # CONFIDENCE MESSAGE
-                # ---------------------------------------------
+                conf = top["confidence"] * 100
 
                 if conf >= 80:
 
                     st.success(
-                        class_name
-                        + " - "
-                        + str(round(conf, 1))
-                        + "% confidence"
+                        f"**{class_display_name.upper()}**\n\n"
+                        f"**{conf:.1f}% confidence**"
                     )
 
                 elif conf >= 50:
 
                     st.warning(
-                        class_name
-                        + " - "
-                        + str(round(conf, 1))
-                        + "% confidence"
+                        f"**{class_display_name.upper()}**\n\n"
+                        f"**{conf:.1f}% confidence**"
                     )
 
                 else:
 
                     st.error(
-                        class_name
-                        + " - "
-                        + str(round(conf, 1))
-                        + "% confidence (low certainty)"
+                        f"**{class_display_name.upper()}**\n\n"
+                        f"**{conf:.1f}% confidence — low certainty**"
                     )
 
+                st.markdown("**Interpretation**")
 
-                # ---------------------------------------------
-                # CLASS DESCRIPTION
-                # ---------------------------------------------
-
-                st.caption(
+                st.write(
                     CLASS_INFO.get(
-                        top["class"],
+                        predicted_class,
                         ""
                     )
                 )
 
-
-                # ---------------------------------------------
-                # ALL PROBABILITIES
-                # ---------------------------------------------
-
-                st.write(
-                    "All class probabilities:"
+                st.caption(
+                    "Confidence reflects the model's prediction score "
+                    "and should not be interpreted as clinical certainty."
                 )
 
-                for p in preds_sorted:
 
-                    class_name = p["class"].replace(
-                        "_",
-                        " "
+            # -------------------------------------------------
+            # CLASS PROBABILITIES
+            # -------------------------------------------------
+
+            st.markdown("---")
+
+            st.subheader("Class Probabilities")
+
+            for p in preds_sorted:
+
+                class_name = p["class"].replace(
+                    "_",
+                    " "
+                )
+
+                confidence_value = p["confidence"]
+
+                confidence_percent = confidence_value * 100
+
+                prob_col1, prob_col2 = st.columns(
+                    [4, 1]
+                )
+
+                with prob_col1:
+
+                    st.markdown(
+                        f"**{class_name}**"
                     )
 
-                    conf_val = p["confidence"] * 100
+                with prob_col2:
 
-                    st.progress(
-                        p["confidence"],
-                        text=(
-                            class_name
-                            + ": "
-                            + str(round(conf_val, 1))
-                            + "%"
-                        )
+                    st.markdown(
+                        f"**{confidence_percent:.1f}%**"
                     )
+
+                st.progress(
+                    confidence_value
+                )
 
 
             # -------------------------------------------------
@@ -489,35 +514,26 @@ if image_source is not None:
 
             st.session_state.history.append(
                 {
-                    "Time":
-                        datetime.now().strftime(
-                            "%H:%M:%S"
-                        ),
-
-                    "Image":
-                        image_name,
-
-                    "Prediction":
-                        top["class"].replace(
-                            "_",
-                            " "
-                        ),
-
-                    "Confidence":
-                        str(round(conf, 1))
-                        + "%"
+                    "Time": datetime.now().strftime("%H:%M:%S"),
+                    "Image": image_name,
+                    "Prediction": class_display_name,
+                    "Confidence": f"{conf:.1f}%"
                 }
             )
 
 
             # -------------------------------------------------
-            # REPORT GENERATION
+            # DOWNLOAD REPORT
             # -------------------------------------------------
 
             report_lines = []
 
             report_lines.append(
-                "X-ray Quality Control Report"
+                "X-RAY IMAGE QUALITY ASSESSMENT"
+            )
+
+            report_lines.append(
+                "=" * 40
             )
 
             report_lines.append(
@@ -535,23 +551,23 @@ if image_source is not None:
             )
 
             report_lines.append(
-                "Prediction: "
-                + top["class"].replace(
-                    "_",
-                    " "
-                )
+                "Assessment: "
+                + class_display_name
             )
 
             report_lines.append(
                 "Confidence: "
-                + str(round(conf, 1))
-                + "%"
+                + f"{conf:.1f}%"
             )
 
             report_lines.append("")
 
             report_lines.append(
-                "All class probabilities:"
+                "CLASS PROBABILITIES"
+            )
+
+            report_lines.append(
+                "-" * 25
             )
 
             for p in preds_sorted:
@@ -561,25 +577,33 @@ if image_source is not None:
                     " "
                 )
 
-                conf_val = p["confidence"] * 100
+                confidence_percent = p["confidence"] * 100
 
                 report_lines.append(
-                    "- "
-                    + class_name
-                    + ": "
-                    + str(round(conf_val, 1))
-                    + "%"
+                    f"{class_name}: "
+                    f"{confidence_percent:.1f}%"
                 )
 
+            report_lines.append("")
+
+            report_lines.append(
+                "Model: Custom Vision Transformer (ViT)"
+            )
+
+            report_lines.append(
+                "Application: Radiographic image-quality assessment"
+            )
+
+            report_lines.append("")
+
+            report_lines.append(
+                "Note: This AI-generated assessment is intended "
+                "for research and prototype demonstration purposes."
+            )
 
             report_text = "\n".join(
                 report_lines
             )
-
-
-            # -------------------------------------------------
-            # DOWNLOAD REPORT
-            # -------------------------------------------------
 
             st.download_button(
                 label="Download Report",
@@ -595,33 +619,11 @@ if image_source is not None:
             )
 
 
-        # -----------------------------------------------------
-        # ERROR HANDLING
-        # -----------------------------------------------------
-
-        except requests.exceptions.Timeout:
-
-            st.error(
-                "The AI inference request timed out. "
-                "Please try again."
-            )
-
         except requests.exceptions.RequestException as e:
 
             st.error(
-                "The connection to the AI inference service "
-                "failed."
-            )
-
-            st.caption(
-                "Technical details: " + str(e)
-            )
-
-        except KeyError:
-
-            st.error(
-                "The AI service returned an unexpected response. "
-                "Please check the Roboflow workflow configuration."
+                "Unable to connect to the inference service. "
+                "Please try again."
             )
 
         except Exception as e:
@@ -648,23 +650,12 @@ if st.session_state.history:
 
 
 # ---------------------------------------------------------
-# FINAL DISCLAIMER
+# FOOTER
 # ---------------------------------------------------------
 
 st.markdown("---")
 
 st.caption(
-    "This tool is intended for demonstration and research purposes "
-    "and is not a substitute for professional radiographic "
-    "quality assessment or clinical decision-making."
-)
-
-
-# ---------------------------------------------------------
-# FOOTER
-# ---------------------------------------------------------
-
-st.caption(
-    "Built by Zara Ashraf | Custom-trained Vision Transformer "
-    "classification model."
+    "Built by Zara Ashraf | "
+    "Custom-trained Vision Transformer classification model."
 )
