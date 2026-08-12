@@ -143,7 +143,7 @@ for col, (symbol, text) in zip(assessment_cols, assessment_items):
 # WHY I DEVELOPED THIS TOOL
 # ---------------------------------------------------------
 
-with st.expander("Why I developed this tool"):
+with st.expander("Why I Developed This Tool"):
 
     st.write(
         "In medical imaging, obtaining a diagnostic image is not only about "
@@ -153,16 +153,23 @@ with st.expander("Why I developed this tool"):
     )
 
     st.write(
-        "I developed this project to explore how artificial intelligence could be "
-        "used as a supportive quality-control tool for radiographic images. "
+        "I developed this project to explore how artificial intelligence could "
+        "be used as a supportive quality-control tool for radiographic images. "
         "The goal is not to replace radiographers or radiologists, but to "
         "investigate whether a trained AI model can identify common image-quality "
         "issues and provide an additional layer of support before image interpretation."
     )
 
+    st.markdown(
+        "**The idea behind the project is simple: instead of using AI only to "
+        "detect disease, can we also use it to help ensure that the image itself "
+        "is suitable for interpretation?**"
+    )
+
     st.write(
-        "This project also allowed me to combine my background in Medical Imaging "
-        "Technology with my interest in artificial intelligence and medical imaging research."
+        "This project allowed me to combine my clinical background in Medical "
+        "Imaging Technology with my interest in artificial intelligence and "
+        "medical imaging research."
     )
 
 
