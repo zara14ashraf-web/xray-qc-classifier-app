@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.pyc
+best_xray_qc_vit.pth
+Xray_QC_ViT.zip
