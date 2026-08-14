@@ -402,69 +402,12 @@ st.subheader(
     "Try a sample image"
 )
 
-import os
-
-sample_files = [
-    os.path.join(
-        "Xray_QC_ViT",
-        "test",
-        "Blur",
-        os.listdir(
-            os.path.join(
-                "Xray_QC_ViT",
-                "test",
-                "Blur"
-            )
-        )[0]
-    ),
-
-    os.path.join(
-        "Xray_QC_ViT",
-        "test",
-        "Exposure_Error",
-        os.listdir(
-            os.path.join(
-                "Xray_QC_ViT",
-                "test",
-                "Exposure_Error"
-            )
-        )[0]
-    ),
-
-    os.path.join(
-        "Xray_QC_ViT",
-        "test",
-        "Foreign_Artifact",
-        "Cofield-59_png.rf.3c3c636c6b1e2be94f07de66cb644f08.jpg"
-    ),
-
-    os.path.join(
-        "Xray_QC_ViT",
-        "test",
-        "Good_Quality",
-        "IM-0011-0001_jpeg.rf.6c6709c8368218bd35a19428ae8147ae.jpg"
-    )
-]
-
-sample_cols = st.columns(4)
-
-for i, col in enumerate(sample_cols):
-
-    with col:
-
-        if st.button(
-            "Sample " + str(i + 1),
-            width="stretch"
-        ):
-
-            st.session_state.selected_image_path = sample_files[i]
-
-            # Clear uploaded image selection
-            st.session_state.uploaded_file = None
-
+st.info(
+    "Sample images are available in the local development version. "
+    "For the deployed version, please upload an X-ray below."
+)
 
 st.markdown("---")
-
 
 # ---------------------------------------------------------
 # UPLOAD SECTION
