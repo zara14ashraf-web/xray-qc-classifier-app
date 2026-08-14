@@ -13,7 +13,21 @@
 [**🌐 Try the Live App**](https://xray-qc-classifier-app-hr8nvswgygbfgscbhlbhyy.streamlit.app/) · [**📊 View Results**](#-results) · [**🔬 Model Interpretability**](#-model-interpretability)
 
 **🤗** [**View the trained ViT model**](https://huggingface.co/zara14ashraf/xray-qc-vit) · **💻** [**View the source code**](https://github.com/zara14ashraf-web/xray-qc-classifier-app)
+### 🖥️ Application Preview
 
+The deployed application provides an interactive interface for uploading an X-ray image, viewing the predicted quality category, and examining the model confidence.
+
+<p align="center">
+  <img src="assets/app-screenshot-1.png" width="80%">
+</p>
+
+<p align="center">
+  <img src="assets/app-screenshot-2.png" width="80%">
+</p>
+
+<p align="center">
+  <img src="assets/app-screenshot-3.png" width="80%">
+</p>
 ---
 
 ## Introduction
@@ -68,6 +82,13 @@ The application performs **four-class X-ray image-quality classification**:
 **Upload X-ray → Preprocessing → Vision Transformer → Class Probabilities → Predicted Class + Confidence**
 
 The system assesses **image quality only** and does not diagnose disease or interpret clinical findings.
+### Four Quality Categories
+
+<p align="center">
+  <img src="assets/classification-examples.png" width="95%">
+</p>
+
+*Representative examples of the four image-quality categories.*
 
 ---
 
@@ -98,6 +119,11 @@ Because the images originated from multiple sources, variations in acquisition c
 The project followed an end-to-end deep-learning workflow:
 
 **Dataset Curation → Image Preprocessing → Data Augmentation → Vision Transformer Training → Model Comparison → Class-wise Evaluation → Final Model Selection → Model Hosting → Streamlit Deployment**
+### End-to-End Workflow
+
+<p align="center">
+  <img src="assets/workflow.png" width="95%">
+</p>
 
 ### Vision Transformer
 
@@ -114,6 +140,11 @@ Multiple model versions were developed and evaluated before selecting the final 
 ## 📈 Results
 
 Three model versions (**V1, V2, and V3**) were compared during development.
+### Performance Summary
+
+<p align="center">
+  <img src="assets/results.png" width="95%">
+</p>
 
 | Model | Best Validation Accuracy | Test Accuracy | Status |
 |---|---:|---:|---|
