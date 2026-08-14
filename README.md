@@ -17,11 +17,13 @@
 
 The deployed Streamlit application provides an interactive interface for uploading an X-ray image and viewing the model's predicted quality class and confidence probability.
 
-![X-ray QC Classifier - App Screenshot 1](assets/app-screenshot-1.png)
+### Application Screenshots
 
-![X-ray QC Classifier - App Screenshot 2](assets/app-screenshot-2.png)
+![X-ray QC Classifier - Application Screenshot 1](assets/app-screenshot-1.png.PNG)
 
-![X-ray QC Classifier - App Screenshot 3](assets/app-screenshot-3.png)
+![X-ray QC Classifier - Application Screenshot 2](assets/app-screenshot-2.png.PNG)
+
+![X-ray QC Classifier - Application Screenshot 3](assets/app-screenshot-3.png.PNG)
 ---
 
 ## Introduction
