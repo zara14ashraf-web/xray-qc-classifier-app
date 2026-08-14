@@ -52,21 +52,21 @@ device = torch.device("cpu")
 
 @st.cache_resource
 def load_model():
-
     model = timm.create_model(
         "vit_base_patch16_224",
         pretrained=False,
         num_classes=4
     )
-    model_path = hf_hub_download(
-    repo_id=MODEL_REPO,
-    filename=MODEL_FILENAME
-)
 
-   checkpoint = torch.load(
-    model_path,
-    map_location=device
-)
+    model_path = hf_hub_download(
+        repo_id=MODEL_REPO,
+        filename=MODEL_FILENAME
+    )
+
+    checkpoint = torch.load(
+        model_path,
+        map_location=device
+    )
 
     model.load_state_dict(
         checkpoint["model_state_dict"]
