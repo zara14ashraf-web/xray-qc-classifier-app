@@ -436,7 +436,81 @@ st.markdown("---")
 
 image_source = None
 image_name = None
+# ---------------------------------------------------------
+# UPLOAD SECTION
+# ---------------------------------------------------------
 
+st.subheader(
+    "Upload an X-ray"
+)
+
+st.write(
+    "Upload a radiograph to assess common image-quality issues."
+)
+
+uploaded_file = st.file_uploader(
+    "Upload X-ray",
+    type=[
+        "jpg",
+        "jpeg",
+        "png",
+        "bmp",
+        "tiff",
+        "webp",
+        "jfif"
+    ],
+    help="Maximum file size: 200 MB"
+)
+
+st.caption(
+    "Supported formats: JPG, JPEG, PNG, BMP, TIFF, WEBP, JFIF"
+)
+
+
+# ---------------------------------------------------------
+# IMAGE SELECTION
+# ---------------------------------------------------------
+
+image_source = None
+image_name = None
+
+if uploaded_file is not None:
+
+    try:
+
+        image_source = Image.open(
+            uploaded_file
+        ).convert("RGB")
+
+        image_name = uploaded_file.name
+
+        st.session_state.selected_image_path = None
+
+    except Exception:
+
+        st.error(
+            "The uploaded file could not be opened as an image."
+        )
+
+elif st.session_state.selected_image_path is not None:
+
+    try:
+
+        image_source = Image.open(
+            st.session_state.selected_image_path
+        ).convert("RGB")
+
+        sample_path = (
+            st.session_state.selected_image_path
+        )
+
+        image_name = sample_path
+
+    except FileNotFoundError:
+
+        st.warning(
+            "Sample image not found."
+        )
 if uploaded_file is not None:
 
     try:
