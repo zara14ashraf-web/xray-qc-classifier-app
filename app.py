@@ -4,7 +4,8 @@ import timm
 from PIL import Image
 from torchvision import transforms
 from datetime import datetime
-
+import os
+import requests
 
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
@@ -22,6 +23,15 @@ st.set_page_config(
 # ---------------------------------------------------------
 
 MODEL_PATH = "best_xray_qc_vit.pth"
+
+MODEL_URL = "https://huggingface.co/zara14ashraf/xray-qc-vit/resolve/main/best_xray_qc_vit.pth"
+
+if not os.path.exists(MODEL_PATH):
+    response = requests.get(MODEL_URL)
+    response.raise_for_status()
+
+    with open(MODEL_PATH, "wb") as f:
+        f.write(response.content)
 
 CLASS_NAMES = [
     "Blur",
