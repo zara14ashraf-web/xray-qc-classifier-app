@@ -81,7 +81,7 @@ The system assesses **image quality only** and does not diagnose disease or inte
 ### Four Quality Categories
 
 <p align="center">
-  <img src="assets/classification-examples.png" width="70%">
+  <img src="assets/classification-examples(1).png" width="70%">
 </p>
 
 *Representative examples of the four image-quality categories.*
@@ -118,7 +118,7 @@ The project followed an end-to-end deep-learning workflow:
 ### End-to-End Workflow
 
 <p align="center">
-  <img src="assets/workflow.png" width="70%">
+  <img src="assets/workflow(1).png" width="70%">
 </p>
 
 ### Vision Transformer
@@ -139,7 +139,7 @@ Three model versions (**V1, V2, and V3**) were compared during development.
 ### Performance Summary
 
 <p align="center">
-  <img src="assets/results.png" width="70%">
+  <img src="assets/results(1).png" width="70%">
 </p>
 
 | Model | Best Validation Accuracy | Test Accuracy | Status |
