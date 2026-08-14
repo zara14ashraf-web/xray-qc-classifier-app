@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 import requests
 
+
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
 # ---------------------------------------------------------
@@ -24,14 +25,25 @@ st.set_page_config(
 
 MODEL_PATH = "best_xray_qc_vit.pth"
 
-MODEL_URL = "https://huggingface.co/zara14ashraf/xray-qc-vit/resolve/main/best_xray_qc_vit.pth"
+MODEL_URL = (
+    "https://huggingface.co/zara14ashraf/xray-qc-vit/"
+    "resolve/main/best_xray_qc_vit.pth"
+)
 
 if not os.path.exists(MODEL_PATH):
-    response = requests.get(MODEL_URL)
-    response.raise_for_status()
 
-    with open(MODEL_PATH, "wb") as f:
-        f.write(response.content)
+    with st.spinner("Loading AI model..."):
+
+        response = requests.get(
+            MODEL_URL,
+            timeout=300
+        )
+
+        response.raise_for_status()
+
+        with open(MODEL_PATH, "wb") as f:
+            f.write(response.content)
+
 
 CLASS_NAMES = [
     "Blur",
@@ -294,35 +306,27 @@ with st.expander(
     "How it works"
 ):
 
-    st.markdown(
-        "### 1 — Upload"
-    )
+    st.markdown("### 1 — Upload")
 
     st.write(
         "A radiographic image is uploaded to the application."
     )
 
-    st.markdown(
-        "### 2 — Preprocessing"
-    )
+    st.markdown("### 2 — Preprocessing")
 
     st.write(
         "The image is resized and normalized using the same "
         "preprocessing approach used for the trained model."
     )
 
-    st.markdown(
-        "### 3 — AI Classification"
-    )
+    st.markdown("### 3 — AI Classification")
 
     st.write(
         "The locally stored Vision Transformer (ViT) model "
         "classifies the image into one of four quality categories."
     )
 
-    st.markdown(
-        "### 4 — Result"
-    )
+    st.markdown("### 4 — Result")
 
     st.write(
         "The application displays the predicted category and "
@@ -364,9 +368,7 @@ with st.expander(
             "**Classes**"
         )
 
-        st.write(
-            "4"
-        )
+        st.write("4")
 
         st.markdown(
             "**Inference**"
@@ -393,7 +395,6 @@ with st.expander(
     )
 
 
-# ```python
 # ---------------------------------------------------------
 # SAMPLE IMAGES
 # ---------------------------------------------------------
@@ -402,40 +403,128 @@ st.subheader(
     "Try a sample image"
 )
 
+
+def find_sample(cloud_path, local_path):
+
+    if os.path.exists(cloud_path):
+        return cloud_path
+
+    if os.path.exists(local_path):
+        return local_path
+
+    return None
+
+
 sample_files = [
-    ("Blur", "streamlit/sample 1.jpg"),
-    ("Exposure Error", "streamlit/sample 2.png"),
-    ("Foreign Artifact", "streamlit/sample 3.png"),
-    ("Good Quality", "streamlit/sample 4.jpeg"),
+    (
+        "Blur",
+        find_sample(
+            "streamlit/sample 1.jpg",
+            os.path.join(
+                "Xray_QC_ViT",
+                "test",
+                "Blur",
+                os.listdir(
+                    os.path.join(
+                        "Xray_QC_ViT",
+                        "test",
+                        "Blur"
+                    )
+                )[0]
+            ) if os.path.exists(
+                os.path.join(
+                    "Xray_QC_ViT",
+                    "test",
+                    "Blur"
+                )
+            ) else None
+        )
+    ),
+
+    (
+        "Exposure Error",
+        find_sample(
+            "streamlit/sample 2.png",
+            os.path.join(
+                "Xray_QC_ViT",
+                "test",
+                "Exposure_Error",
+                os.listdir(
+                    os.path.join(
+                        "Xray_QC_ViT",
+                        "test",
+                        "Exposure_Error"
+                    )
+                )[0]
+            ) if os.path.exists(
+                os.path.join(
+                    "Xray_QC_ViT",
+                    "test",
+                    "Exposure_Error"
+                )
+            ) else None
+        )
+    ),
+
+    (
+        "Foreign Artifact",
+        find_sample(
+            "streamlit/sample 3.png",
+            os.path.join(
+                "Xray_QC_ViT",
+                "test",
+                "Foreign_Artifact",
+                "Cofield-59_png.rf.3c3c636c6b1e2be94f07de66cb644f08.jpg"
+            )
+        )
+    ),
+
+    (
+        "Good Quality",
+        find_sample(
+            "streamlit/sample 4.jpeg",
+            os.path.join(
+                "Xray_QC_ViT",
+                "test",
+                "Good_Quality",
+                "IM-0011-0001_jpeg.rf.6c6709c8368218bd35a19428ae8147ae.jpg"
+            )
+        )
+    )
 ]
+
 
 sample_cols = st.columns(4)
 
-for i, (label, path) in enumerate(sample_files):
+for i, col in enumerate(sample_cols):
 
-    with sample_cols[i]:
+    with col:
 
         if st.button(
             f"Sample {i + 1}",
-            use_container_width=True
+            width="stretch"
         ):
 
-            if os.path.exists(path):
-                st.session_state.selected_image_path = path
-                st.rerun()
-            else:
-                st.error(
-                    f"Sample image not found: {path}"
+            selected_path = sample_files[i][1]
+
+            if selected_path is not None:
+
+                st.session_state.selected_image_path = (
+                    selected_path
                 )
+
+                st.rerun()
+
+            else:
+
+                st.error(
+                    "Sample image not found."
+                )
+
 
 st.markdown("---")
 
-# ---------------------------------------------------------
-# IMAGE SELECTION
-# ---------------------------------------------------------
 
-image_source = None
-image_name = None
 # ---------------------------------------------------------
 # UPLOAD SECTION
 # ---------------------------------------------------------
@@ -474,6 +563,7 @@ st.caption(
 image_source = None
 image_name = None
 
+
 if uploaded_file is not None:
 
     try:
@@ -492,42 +582,6 @@ if uploaded_file is not None:
             "The uploaded file could not be opened as an image."
         )
 
-elif st.session_state.selected_image_path is not None:
-
-    try:
-
-        image_source = Image.open(
-            st.session_state.selected_image_path
-        ).convert("RGB")
-
-        sample_path = (
-            st.session_state.selected_image_path
-        )
-
-        image_name = sample_path
-
-    except FileNotFoundError:
-
-        st.warning(
-            "Sample image not found."
-        )
-if uploaded_file is not None:
-
-    try:
-
-        image_source = Image.open(
-            uploaded_file
-        ).convert("RGB")
-
-        image_name = uploaded_file.name
-
-        st.session_state.selected_image_path = None
-
-    except Exception:
-
-        st.error(
-            "The uploaded file could not be opened as an image."
-        )
 
 elif st.session_state.selected_image_path is not None:
 
