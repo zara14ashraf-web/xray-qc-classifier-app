@@ -208,21 +208,7 @@ If appropriately validated, such a system could act as an **early quality-contro
 The AI would remain a **supportive tool**, with final decisions made by qualified imaging professionals.
 
 ---
-## 🖥️ Application Preview
 
-The deployed Streamlit application provides a simple interface for uploading an X-ray image and viewing the model's quality prediction and confidence probability.
-
-### Live Application
-
-[🚀 Try the X-ray Quality Control Classifier](https://xray-qc-classifier-app-hr8nvswgygbfgscbhlbhyy.streamlit.app/)
-
-### Application Screenshots
-
-![X-ray QC Classifier - Application Interface](assets/app-screenshot-1.png)
-
-![X-ray QC Classifier - Prediction Output](assets/app-screenshot-2.png)
-
-![X-ray QC Classifier - Application View](assets/app-screenshot-3.png)
 ## 🌐 Deployment
 
 The trained model was integrated into a **Streamlit** web application.
