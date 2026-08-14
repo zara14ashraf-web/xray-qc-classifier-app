@@ -402,43 +402,33 @@ st.subheader(
     "Try a sample image"
 )
 
-st.info(
-    "Sample images are available in the local development version. "
-    "For the deployed version, please upload an X-ray below."
-)
+sample_files = [
+    ("Blur", "streamlit/sample 1.jpg"),
+    ("Exposure Error", "streamlit/sample 2.png"),
+    ("Foreign Artifact", "streamlit/sample 3.png"),
+    ("Good Quality", "streamlit/sample 4.jpeg"),
+]
+
+sample_cols = st.columns(4)
+
+for i, (label, path) in enumerate(sample_files):
+
+    with sample_cols[i]:
+
+        if st.button(
+            f"Sample {i + 1}",
+            use_container_width=True
+        ):
+
+            if os.path.exists(path):
+                st.session_state.selected_image_path = path
+                st.rerun()
+            else:
+                st.error(
+                    f"Sample image not found: {path}"
+                )
 
 st.markdown("---")
-
-# ---------------------------------------------------------
-# UPLOAD SECTION
-# ---------------------------------------------------------
-
-st.subheader(
-    "Upload an X-ray"
-)
-
-st.write(
-    "Upload a radiograph to assess common image-quality issues."
-)
-
-uploaded_file = st.file_uploader(
-    "Upload X-ray",
-    type=[
-        "jpg",
-        "jpeg",
-        "png",
-        "bmp",
-        "tiff",
-        "webp",
-        "jfif"
-    ],
-    help="Maximum file size: 200 MB"
-)
-
-st.caption(
-    "Supported formats: JPG, JPEG, PNG, BMP, TIFF, WEBP, JFIF"
-)
-
 
 # ---------------------------------------------------------
 # IMAGE SELECTION
