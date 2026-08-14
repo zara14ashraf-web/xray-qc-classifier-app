@@ -299,7 +299,7 @@ It reflects an interest in developing **responsible AI tools that can support me
 
 ## 👩‍⚕️ About the Developer
 
-**Zara Ashraf| Medical Imaging Technology Student**
+**Zara Ashraf | Medical Imaging Technology Student**
 
 **Medical Imaging • Artificial Intelligence • Healthcare Technology • Research**
 
