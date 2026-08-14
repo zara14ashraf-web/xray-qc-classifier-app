@@ -13,21 +13,15 @@
 [**🌐 Try the Live App**](https://xray-qc-classifier-app-hr8nvswgygbfgscbhlbhyy.streamlit.app/) · [**📊 View Results**](#-results) · [**🔬 Model Interpretability**](#-model-interpretability)
 
 **🤗** [**View the trained ViT model**](https://huggingface.co/zara14ashraf/xray-qc-vit) · **💻** [**View the source code**](https://github.com/zara14ashraf-web/xray-qc-classifier-app)
-### 🖥️ Application Preview
+## 🖥️ Application Preview
 
-The deployed application provides an interactive interface for uploading an X-ray image, viewing the predicted quality category, and examining the model confidence.
+The deployed Streamlit application provides an interactive interface for uploading an X-ray image and viewing the model's predicted quality class and confidence probability.
 
-<p align="center">
-  <img src="assets/app-screenshot-1.png" width="80%">
-</p>
+![X-ray QC Classifier - App Screenshot 1](assets/app-screenshot-1.png)
 
-<p align="center">
-  <img src="assets/app-screenshot-2.png" width="80%">
-</p>
+![X-ray QC Classifier - App Screenshot 2](assets/app-screenshot-2.png)
 
-<p align="center">
-  <img src="assets/app-screenshot-3.png" width="80%">
-</p>
+![X-ray QC Classifier - App Screenshot 3](assets/app-screenshot-3.png)
 ---
 
 ## Introduction
