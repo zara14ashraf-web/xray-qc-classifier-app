@@ -5,8 +5,6 @@ from PIL import Image
 from torchvision import transforms
 from datetime import datetime
 import os
-import requests
-
 
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
@@ -24,26 +22,6 @@ st.set_page_config(
 # ---------------------------------------------------------
 
 MODEL_PATH = "best_xray_qc_vit.pth"
-
-MODEL_URL = (
-    "https://huggingface.co/zara14ashraf/xray-qc-vit/"
-    "resolve/main/best_xray_qc_vit.pth"
-)
-
-if not os.path.exists(MODEL_PATH):
-
-    with st.spinner("Loading AI model..."):
-
-        response = requests.get(
-            MODEL_URL,
-            timeout=300
-        )
-
-        response.raise_for_status()
-
-        with open(MODEL_PATH, "wb") as f:
-            f.write(response.content)
-
 
 CLASS_NAMES = [
     "Blur",
@@ -306,27 +284,35 @@ with st.expander(
     "How it works"
 ):
 
-    st.markdown("### 1 — Upload")
+    st.markdown(
+        "### 1 — Upload"
+    )
 
     st.write(
         "A radiographic image is uploaded to the application."
     )
 
-    st.markdown("### 2 — Preprocessing")
+    st.markdown(
+        "### 2 — Preprocessing"
+    )
 
     st.write(
         "The image is resized and normalized using the same "
         "preprocessing approach used for the trained model."
     )
 
-    st.markdown("### 3 — AI Classification")
+    st.markdown(
+        "### 3 — AI Classification"
+    )
 
     st.write(
         "The locally stored Vision Transformer (ViT) model "
         "classifies the image into one of four quality categories."
     )
 
-    st.markdown("### 4 — Result")
+    st.markdown(
+        "### 4 — Result"
+    )
 
     st.write(
         "The application displays the predicted category and "
@@ -368,7 +354,9 @@ with st.expander(
             "**Classes**"
         )
 
-        st.write("4")
+        st.write(
+            "4"
+        )
 
         st.markdown(
             "**Inference**"
@@ -395,40 +383,38 @@ with st.expander(
     )
 
 
+# ```python
 # ---------------------------------------------------------
 # SAMPLE IMAGES
 # ---------------------------------------------------------
 
-st.subheader(
-    "Try a sample image"
-)
+st.subheader("Try a sample image")
 
 sample_files = [
-    ("Blur", "streamlit/sample 1.jpg"),
-    ("Exposure Error", "streamlit/sample 2.png"),
-    ("Foreign Artifact", "streamlit/sample 3.png"),
-    ("Good Quality", "streamlit/sample 4.jpeg"),
+    ("Blur", "sample_images/blur.jpg"),
+    ("Exposure Error", "sample_images/exposure.jpg"),
+    ("Foreign Artifact", "sample_images/artifact.jpg"),
+    ("Good Quality", "sample_images/good.jpg"),
 ]
 
 sample_cols = st.columns(4)
 
-for i, col in enumerate(sample_cols):
+for i, (label, path) in enumerate(sample_files):
 
-    with col:
+    with sample_cols[i]:
 
-        if st.button(
-            f"Sample {i + 1}",
-            width="stretch"
-        ):
+        if st.button(f"Sample {i + 1}", width="stretch"):
 
-            st.session_state.selected_image_path = (
-                sample_files[i][1]
-            )
+            if os.path.exists(path):
 
-            st.rerun()
+                st.session_state.selected_image_path = path
+                st.rerun()
+
+            else:
+
+                st.error(f"Sample image not found: {path}")
 
 st.markdown("---")
-
 
 # ---------------------------------------------------------
 # UPLOAD SECTION
@@ -468,7 +454,6 @@ st.caption(
 image_source = None
 image_name = None
 
-
 if uploaded_file is not None:
 
     try:
@@ -486,7 +471,6 @@ if uploaded_file is not None:
         st.error(
             "The uploaded file could not be opened as an image."
         )
-
 
 elif st.session_state.selected_image_path is not None:
 
