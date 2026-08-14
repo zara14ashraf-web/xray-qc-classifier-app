@@ -403,96 +403,12 @@ st.subheader(
     "Try a sample image"
 )
 
-
-def find_sample(cloud_path, local_path):
-
-    if os.path.exists(cloud_path):
-        return cloud_path
-
-    if os.path.exists(local_path):
-        return local_path
-
-    return None
-
-
 sample_files = [
-    (
-        "Blur",
-        find_sample(
-            "streamlit/sample 1.jpg",
-            os.path.join(
-                "Xray_QC_ViT",
-                "test",
-                "Blur",
-                os.listdir(
-                    os.path.join(
-                        "Xray_QC_ViT",
-                        "test",
-                        "Blur"
-                    )
-                )[0]
-            ) if os.path.exists(
-                os.path.join(
-                    "Xray_QC_ViT",
-                    "test",
-                    "Blur"
-                )
-            ) else None
-        )
-    ),
-
-    (
-        "Exposure Error",
-        find_sample(
-            "streamlit/sample 2.png",
-            os.path.join(
-                "Xray_QC_ViT",
-                "test",
-                "Exposure_Error",
-                os.listdir(
-                    os.path.join(
-                        "Xray_QC_ViT",
-                        "test",
-                        "Exposure_Error"
-                    )
-                )[0]
-            ) if os.path.exists(
-                os.path.join(
-                    "Xray_QC_ViT",
-                    "test",
-                    "Exposure_Error"
-                )
-            ) else None
-        )
-    ),
-
-    (
-        "Foreign Artifact",
-        find_sample(
-            "streamlit/sample 3.png",
-            os.path.join(
-                "Xray_QC_ViT",
-                "test",
-                "Foreign_Artifact",
-                "Cofield-59_png.rf.3c3c636c6b1e2be94f07de66cb644f08.jpg"
-            )
-        )
-    ),
-
-    (
-        "Good Quality",
-        find_sample(
-            "streamlit/sample 4.jpeg",
-            os.path.join(
-                "Xray_QC_ViT",
-                "test",
-                "Good_Quality",
-                "IM-0011-0001_jpeg.rf.6c6709c8368218bd35a19428ae8147ae.jpg"
-            )
-        )
-    )
+    ("Blur", "streamlit/sample 1.jpg"),
+    ("Exposure Error", "streamlit/sample 2.png"),
+    ("Foreign Artifact", "streamlit/sample 3.png"),
+    ("Good Quality", "streamlit/sample 4.jpeg"),
 ]
-
 
 sample_cols = st.columns(4)
 
@@ -505,22 +421,11 @@ for i, col in enumerate(sample_cols):
             width="stretch"
         ):
 
-            selected_path = sample_files[i][1]
+            st.session_state.selected_image_path = (
+                sample_files[i][1]
+            )
 
-            if selected_path is not None:
-
-                st.session_state.selected_image_path = (
-                    selected_path
-                )
-
-                st.rerun()
-
-            else:
-
-                st.error(
-                    "Sample image not found."
-                )
-
+            st.rerun()
 
 st.markdown("---")
 
