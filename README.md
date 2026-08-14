@@ -299,11 +299,10 @@ It reflects an interest in developing **responsible AI tools that can support me
 
 ## 👩‍⚕️ About the Developer
 
-**Medical Imaging Technology Student**
+**Zara Ashraf| Medical Imaging Technology Student**
 
 **Medical Imaging • Artificial Intelligence • Healthcare Technology • Research**
 
 This project represents an ongoing exploration of how emerging technologies can be responsibly applied to real-world challenges in medical imaging.
 
 
-Medical Imaging • Artificial Intelligence • Healthcare Technology • Research
