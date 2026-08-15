@@ -268,6 +268,12 @@ with st.expander(
         "additional layer of support before image interpretation."
     )
 
+    st.write(
+        "The tool is also designed to explore how AI-assisted quality "
+        "checks could help make the image-quality assessment workflow "
+        "more efficient by identifying common issues at an early stage."
+    )
+
     st.markdown(
         "**The idea behind the project is simple: instead of using AI "
         "only to detect disease, can we also use it to help ensure that "
