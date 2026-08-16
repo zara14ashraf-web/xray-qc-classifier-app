@@ -35,7 +35,7 @@ CLASS_INFO = {
     "Good_Quality": "The X-ray meets quality standards - no visible defects.",
     "Blur": "The image shows motion blur or focus issues.",
     "Exposure_Error": "The image is over-exposed or under-exposed.",
-    "Foreign_Artifact": "An unexpected object (metal, jewelry, hardware) is visible in the image.",
+    "Foreign_Artifact": "An unexpected object (metal, jewelry, hardware) may be visible in the image and could affect image quality.",
 }
 
 
